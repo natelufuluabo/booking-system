@@ -2,7 +2,7 @@ As a restaurant owner,
 I want to create a business account for my restaurant's booking system,
 So that I can manage reservations and related activities efficiently.
 
-Acceptance Criteria:
+## Acceptance Criteria:
 
 - When creating a business account, I should provide the following details: business name, full address, phone number, and email address.
 
