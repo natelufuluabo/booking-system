@@ -33,7 +33,11 @@ Admin accounts should be created as temporary and must have an expiration date. 
 
 - I should be able to delete reservations.
 
-- I should be able to add customer to the waitlist by specifying details such as date, time, party size, and customer details.
+### Waitlist Management:
+
+- If walk-in customers arrive without a reservation and there are no available tables, I should be able to add them to the waitlist by providing their details.
+
+- I should be able to view and manage customers on the waitlist, including adding, editing, or removing them as needed.
 
 ### Account Security:
 
