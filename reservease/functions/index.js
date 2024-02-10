@@ -7,11 +7,21 @@ const {
 
 exports.createRestaurantAccount = onRequest({cors: true}, async (req, res) => {
   const db = getFirestore(app);
+  const emailCheckResponse = await checkIfEmailAlreadyUsed(req.body.email);
+  if (emailCheckResponse.message === "Email already in use") {
+    res.status(400).json({message: emailCheckResponse.message});
+    return;
+  }
+  if (emailCheckResponse.message === "Error checking email existence") {
+    res.status(500).json({message: "Error creating account. Retry"});
+    return;
+  }
   try {
     const docRef = await addDoc(collection(db, "restaurants"), req.body);
     res.status(204).json({accountID: docRef.id});
   } catch (e) {
-    console.error("Error adding document: ", e);
+    res.status(500).json({message: "Error creating account. Retry"});
+    return;
   }
 });
 
