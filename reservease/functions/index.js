@@ -22,3 +22,13 @@ exports.checkIfEmailAlreadyUsed = onRequest({cors: true}, async (req, res) => {
   }
 });
 
+exports.createRestaurantAccount = onRequest({cors: true}, async (req, res) => {
+  const db = getFirestore(app);
+  try {
+    const docRef = await addDoc(collection(db, "restaurants"), req.body);
+    console.log(docRef.id);
+    return res.json({accountID: docRef.id});
+  } catch (e) {
+    return res.json({message: "Error creating account. Retry"});
+  }
+});
