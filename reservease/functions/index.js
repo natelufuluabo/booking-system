@@ -32,3 +32,6 @@ exports.createRestaurantAccount = onRequest({cors: true}, async (req, res) => {
     return res.json({message: "Error creating account. Retry"});
   }
 });
+
+exports.createSuperUser = onRequest({cors: true}, async (req, res) => {
+});
