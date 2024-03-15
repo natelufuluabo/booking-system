@@ -6,18 +6,12 @@ const {
 } = require("firebase/firestore");
 const {getAuth, createUserWithEmailAndPassword} = require("firebase/auth");
 const checkIfEmailAlreadyUsed = require("./functions/email_check");
+const createRestaurantAccount = require(
+    "./functions/restaurant_account_creation");
 
 exports.checkIfEmailAlreadyUsed = checkIfEmailAlreadyUsed;
 
-exports.createRestaurantAccount = onRequest({cors: true}, async (req, res) => {
-  const db = getFirestore(app);
-  try {
-    const docRef = await addDoc(collection(db, "restaurants"), req.body);
-    return res.json({accountID: docRef.id});
-  } catch (e) {
-    return res.json({message: "Error creating account. Retry"});
-  }
-});
+exports.createRestaurantAccount = createRestaurantAccount;
 
 exports.createSuperUser = onRequest({cors: true}, async (req, res) => {
   try {
