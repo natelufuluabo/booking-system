@@ -9,7 +9,7 @@ const {app} = require("../firebase_config");
  * @return {Promise<string|Error>} - A promise that resolves to the UID of the
  * newly created user, or an error if the operation fails.
  */
-async function createAuthID(email, password) {
+const createAuthID = async (email, password) => {
   try {
     const auth = getAuth(app);
     const userCredential = await createUserWithEmailAndPassword(
@@ -18,6 +18,6 @@ async function createAuthID(email, password) {
   } catch (error) {
     return error;
   }
-}
+};
 
 exports.module = createAuthID;
