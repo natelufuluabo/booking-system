@@ -16,7 +16,7 @@ const createAuthID = async (email, password) => {
         auth, email, password);
     return userCredential.user.uid;
   } catch (error) {
-    return error;
+    return false;
   }
 };
 
