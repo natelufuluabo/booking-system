@@ -1,10 +1,11 @@
 const {onRequest} = require("firebase-functions/v2/https");
 const {app} = require("../firebase_config");
-const {getFirestore, collection, addDoc, doc,
+const {getFirestore, doc,
   arrayUnion, getDoc,
 } = require("firebase/firestore");
 const createAuthID = require("../shared/create_authId");
 const registerNewAccountUser = require("../shared/register_new_account_user");
+const saveNewUser = require("../shared/save_new_user");
 
 const maxSuperUsersTo2 = async (docRef) => {
   const docSnap = await getDoc(docRef);
@@ -12,15 +13,6 @@ const maxSuperUsersTo2 = async (docRef) => {
   return data.superUsers.length !== 2;
 };
 
-const saveNewUser = async (database, collectionName, userData) => {
-  try {
-    const newUserRef = await addDoc(
-        collection(database, collectionName), userData);
-    return newUserRef.id;
-  } catch (error) {
-    return false;
-  }
-};
 
 const getNewUserData = async (database, collectionName, userRef) => {
   try {
@@ -53,7 +45,7 @@ const createSuperUser = onRequest({cors: true}, async (req, res) => {
     if (!successfulSecondStep) return res.json({code: 502});
 
     // Add the new super user in the super users collection
-    const newSuperUserRef = await saveNewUser(db, "superUsers", {
+    const newSuperUserRef = await saveNewUser.module(db, "superUsers", {
       name, email, securityLevel: "SuperUser", authID,
     });
     if (!newSuperUserRef) return res.json({code: 503});
