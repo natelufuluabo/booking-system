@@ -1,27 +1,16 @@
 const {onRequest} = require("firebase-functions/v2/https");
 const {app} = require("../firebase_config");
-const {getFirestore, doc,
-  arrayUnion, getDoc,
+const {getFirestore, doc, arrayUnion, getDoc,
 } = require("firebase/firestore");
 const createAuthID = require("../shared/create_authId");
 const registerNewAccountUser = require("../shared/register_new_account_user");
 const saveNewUser = require("../shared/save_new_user");
+const getNewUserData = require("../shared/get_new_user_data");
 
 const maxSuperUsersTo2 = async (docRef) => {
   const docSnap = await getDoc(docRef);
   const data = docSnap.data();
   return data.superUsers.length !== 2;
-};
-
-
-const getNewUserData = async (database, collectionName, userRef) => {
-  try {
-    const newUserData = await getDoc(
-        doc(database, collectionName, userRef));
-    return newUserData.data();
-  } catch (error) {
-    return false;
-  }
 };
 
 const createSuperUser = onRequest({cors: true}, async (req, res) => {
@@ -51,7 +40,7 @@ const createSuperUser = onRequest({cors: true}, async (req, res) => {
     if (!newSuperUserRef) return res.json({code: 503});
 
     // Retrieve new super user data to be returned
-    const newSuperUserData = await getNewUserData(
+    const newSuperUserData = await getNewUserData.module(
         db, "superUsers", newSuperUserRef);
 
     return res.json({code: 204, data: newSuperUserData});
