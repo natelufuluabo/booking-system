@@ -11,6 +11,36 @@ const maxSuperUsersTo2 = async (docRef) => {
   return data.superUsers.length !== 2;
 };
 
+const updateAccountUsers = async (docRef, data) => {
+  try {
+    await updateDoc(docRef, data);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+const saveNewUser = async (database, collectionName, userData) => {
+  try {
+    const newUserRef = await addDoc(
+        collection(database, collectionName), userData);
+    return newUserRef.id;
+  } catch (error) {
+    return false;
+  }
+};
+
+const getNewUserData = async (database, collectionName, userRef) => {
+  try {
+    const newUserData = await getDoc(
+        doc(database, collectionName, userRef));
+    return newUserData.data();
+  } catch (error) {
+    return false;
+  }
+};
+
 const createSuperUser = onRequest({cors: true}, async (req, res) => {
   try {
     const {name, email, password, accountID} = req.body;
@@ -27,19 +57,22 @@ const createSuperUser = onRequest({cors: true}, async (req, res) => {
     if (!authID) return res.json({code: 501});
 
     // Update the superUsers list with the  new super user auth id created
-    await updateDoc(docRef, {superUsers: arrayUnion(authID)});
+    const successfulSecondStep = await updateAccountUsers(
+        docRef, {superUsers: arrayUnion(authID)});
+    if (!successfulSecondStep) return res.json({code: 502});
 
     // Add the new super user in the super users collection
-    const newSuperUserRef = await addDoc(collection(db, "superUsers"), {
+    const newSuperUserRef = await saveNewUser(db, "superUsers", {
       name, email, securityLevel: "SuperUser", authID,
     });
+    if (!newSuperUserRef) return res.json({code: 503});
 
     // Retrieve new super user data to be returned
-    const newSuperUserData = await getDoc(newSuperUserRef);
+    const newSuperUserData = await getNewUserData(
+        db, "superUsers", newSuperUserRef);
 
-    return res.json({code: 204, data: newSuperUserData.data()});
+    return res.json({code: 204, data: newSuperUserData});
   } catch (error) {
-    console.error("Error:", error);
     return res.json({code: 500});
   }
 });
