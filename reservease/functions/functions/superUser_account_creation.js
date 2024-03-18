@@ -24,7 +24,7 @@ const createSuperUser = onRequest({cors: true}, async (req, res) => {
     const successfulFirstStep = await maxSuperUsersTo2(docRef);
     if (!successfulFirstStep) return res.json({code: 404});
 
-    // Refer to function JS-Doc to understand this code
+    // Code to create auth ID for new user in the account
     const authID = await createAuthID.module(email, password);
     if (!authID) return res.json({code: 501});
 
